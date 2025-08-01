@@ -162,7 +162,6 @@ class Controller {
 
       res.render('postsDetail', { data, id, timeAgo, currentUserId: req.session.user?.id });
     } catch (error) {
-      console.log(error)
       res.send(error)
     }
   }
