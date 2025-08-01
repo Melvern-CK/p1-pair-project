@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Posts | Social Media</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">SocialMedia</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/posts/add">New Post</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container py-4">
+      <form class="row g-2 mb-4" action="/posts" method="get">
+        <div class="col-auto">
+          <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search posts..."
+            value="<%= search || '' %>"
+          />
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </form>
+
+      <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Tags</th>
+            <th>Content</th>
+            <th>Sentiment</th>
+            <th>Posted</th>
+            <th>QR Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.forEach(p => { %>
+          <tr>
+            <td><%= p.title %></td>
+            <td><%= p.User.email %></td>
+            <td><%= p.Tags.map(t => t.name).join(', ') %></td>
+            <td><%- markdown ? markdown(p.content) : p.content %></td>
+            <td>
+              <% if (p.sentimentLabel === 'Positive') { %>
+              <span class="badge bg-success text-light">
+                <%= p.sentimentLabel %> (<%= p.sentimentScore %>)
+              </span>
+              <% } else if (p.sentimentLabel === 'Neutral') { %>
+              <span class="badge bg-secondary text-dark">
+                <%= p.sentimentLabel %> (<%= p.sentimentScore %>)
+              </span>
+              <% } else { %>
+              <span class="badge bg-danger text-light">
+                <%= p.sentimentLabel %> (<%= p.sentimentScore %>)
+              </span>
+              <% } %>
+            </td>
+
+            <td><%= timeAgo(p.createdAt) %></td>
+            <td>
+              <% if (p.qr) { %>
+              <img src="<%= p.qr %>" alt="QR" width="80" />
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
